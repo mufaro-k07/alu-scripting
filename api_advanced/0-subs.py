@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 """
-Reddit API helper for subscriber counts.
-
 This module exposes a single function, `number_of_subscribers(subreddit)`,
 which returns the number of subscribers for a given subreddit (or 0 if the
 subreddit is invalid or inaccessible)
@@ -18,7 +16,6 @@ def number_of_subscribers(subreddit):
 	Returns:
 		int: Subscriber count if available, otherwise 0.
 	"""
-	# Getting the URL for the Reddit API endpoint
 	url = f"https://www.reddit.com/r/{subreddit}/about.json"
 
 	# Createing the User-Agent for Reddit
