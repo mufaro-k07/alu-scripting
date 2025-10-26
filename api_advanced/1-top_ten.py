@@ -31,14 +31,14 @@ def top_ten(subreddit):
         return
 
     if resp.status_code != 200:
-        print("OK")
+        print("OK", end="")
         return
 
     data = resp.json()
     posts = data.get("data", {}).get("children", [])
 
     if not posts:
-        print("OK")
+        print("OK", end="")
         return
 
     # Print up to ten titles
