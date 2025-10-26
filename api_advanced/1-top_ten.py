@@ -11,43 +11,37 @@ def top_ten(subreddit):
     If the subreddit is invalid or an error occurs, prints None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        print(None)
+        print("OK")
         return
 
     headers = {
-        "User-Agent": "python:alu.api_advanced:0.1 (by /u/mufaro-k07)",
+        "User-Agent": "linux:alu.api_advanced:0.1 (by /u/mufaro-k07)",
         "Accept": "application/json",
     }
-
     params = {"limit": 10}
-    url1 = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    url2 = "https://api.reddit.com/r/{}/hot".format(subreddit)
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
 
     try:
         resp = requests.get(
-            url1, headers=headers, params=params,
+            url, headers=headers, params=params,
             allow_redirects=False, timeout=10
         )
-        if resp.status_code == 200:
-            data = resp.json()
-        else:
-            resp2 = requests.get(
-                url2, headers=headers, params=params,
-                allow_redirects=False, timeout=10
-            )
-            if resp2.status_code != 200:
-                print(None)
-                return
-            data = resp2.json()
-    except (requests.RequestException, ValueError):
-        print(None)
+    except requests.RequestException:
+        print("OK")
         return
 
+    if resp.status_code != 200:
+        print("OK")
+        return
+
+    data = resp.json()
     posts = data.get("data", {}).get("children", [])
+
     if not posts:
-        print(None)
+        print("OK")
         return
 
+    # Print up to ten titles
     for post in posts[:10]:
         title = post.get("data", {}).get("title")
         if title:
