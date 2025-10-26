@@ -1,37 +1,36 @@
 #!/usr/bin/python3
 """
-This module exposes a single function, `number_of_subscribers(subreddit)`,
-which returns the number of subscribers for a given subreddit (or 0 if the
-subreddit is invalid or inaccessible)
+0-subs: Return the number of subscribers for a given subreddit.
 """
 import requests
 
 
 def number_of_subscribers(subreddit):
-	"""Returns the number of subscribers for a subreddit.
-	
-	Args:
-		subreddit (str): the subreddit name
-	
-	Returns:
-		int: Subscriber count if available, otherwise 0.
-	"""
-	url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    """
+    Queries Reddit's API and returns the subscriber count for `subreddit`.
+    Returns 0 if the subreddit is invalid or on any error.
+    """
+    if not subreddit or not isinstance(subreddit, str):
+        return 0
 
-	# Createing the User-Agent for Reddit
-	headers = {'User-Agent': 'python:api_advanced:v1.0 (by Mufaro)'}
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {
+        "User-Agent": "linux:alu.api_advanced:0.1 (by mufaro-k07)",
+        "Accept": "application/json",
+    }
 
-	# Creating the request and not allowing redirects
-	response = requests.get(url, headers = headers, allow_redirects=False)
+    try:
+        resp = requests.get(url, headers=headers, allow_redirects=False, timeout=10)
+    except requests.RequestException:
+        return 0
 
-	# Checking the validity the of the response
-	if response.status_code == 200:
-		data = response.json()
+    if resp.status_code != 200:
+        return 0
 
-	# If status successful then get subscribers from the subreddit
-		subscribers = data['data']['subscribers']
-		return subscribers
+    try:
+        payload = resp.json()
+    except ValueError:
+        return 0
 
-	# If unsuccessful or the subreddit doesn't exist, then it safely returns 0.
-	else:
-		return 0
+    return payload.get("data", {}).get("subscribers", 0)
+
