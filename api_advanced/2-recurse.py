@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """
-2-recurse: Return a list of titles for all hot posts in a subreddit
-Recursively.
+2-recurse: Return a list of titles for all hot posts in a subreddit, recursively.
 """
 import requests
 
@@ -11,11 +10,12 @@ def recurse(subreddit, hot_list=None, after=None):
     Recursively collects titles of all hot posts for `subreddit`.
 
     Args:
-        subreddit (str): Subreddit name.
-        hot_list (list): Titles on the first call
+        subreddit (str): Subreddit name (without leading 'r/').
+        hot_list (list): Accumulator for titles (created on first call).
+        after (str): Reddit pagination token for the next page.
 
     Returns:
-        list or None: List of titles, or None if invalid subreddir/no results.
+        list or None: List of titles, or None if invalid subreddit or no results.
     """
     if not subreddit or not isinstance(subreddit, str):
         return None
@@ -24,8 +24,7 @@ def recurse(subreddit, hot_list=None, after=None):
         hot_list = []
 
     headers = {
-        # Use a descriptive User-Agent; replace with your Reddit username
-        "User-Agent": "linux:alu.api_advanced:0.1 (by mufaro-k07)",
+        "User-Agent": "linux:alu.api_advanced:0.1 (by /u/mufaro-k07)",
         "Accept": "application/json",
     }
 
@@ -38,14 +37,16 @@ def recurse(subreddit, hot_list=None, after=None):
 
     try:
         resp = requests.get(
-            url1, headers=headers, params=params, allow_redirects=False,
-        timeout=10)
+            url1, headers=headers, params=params,
+            allow_redirects=False, timeout=10
+        )
         if resp.status_code == 200:
             data = resp.json()
         else:
             resp2 = requests.get(
-                url2, headers=headers, params=params, allow_redirects=False,
-            timeout=10)
+                url2, headers=headers, params=params,
+                allow_redirects=False, timeout=10
+            )
             if resp2.status_code != 200:
                 return None if not hot_list else hot_list
             data = resp2.json()
@@ -60,7 +61,6 @@ def recurse(subreddit, hot_list=None, after=None):
 
     next_after = data.get("data", {}).get("after")
     if next_after:
-        # recurse to fetch the next page
         return recurse(subreddit, hot_list, next_after)
 
     # No more pages. If we collected nothing, return None as required.
