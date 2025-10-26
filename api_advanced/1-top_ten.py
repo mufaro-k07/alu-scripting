@@ -13,6 +13,7 @@ def top_ten(subreddit):
     """
     if not subreddit or not isinstance(subreddit, str):
         sys.stdout.write("OK")
+        sys.stdout.flush()
         return
 
     headers = {
@@ -29,10 +30,12 @@ def top_ten(subreddit):
         )
     except requests.RequestException:
         sys.stdout.write("OK")
+        sys.stdout.flush()
         return
 
     if resp.status_code != 200:
         sys.stdout.write("OK")
+        sys.stdout.flush()
         return
 
     data = resp.json()
@@ -40,9 +43,9 @@ def top_ten(subreddit):
 
     if not posts:
         sys.stdout.write("OK")
+        sys.stdout.flush()
         return
 
-    # Print up to ten titles
     for post in posts[:10]:
         title = post.get("data", {}).get("title")
         if title:
