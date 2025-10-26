@@ -1,32 +1,54 @@
 #!/usr/bin/python3
 """
-prints the titles of the first 10 hot posts listed for a given subreddit
+1-top_ten: Print titles of the first 10 hot posts for a subreddit.
 """
-
-from requests import get
+import requests
 
 
 def top_ten(subreddit):
     """
-    function that queries the Reddit API and prints the titles of the first
-    10 hot posts listed for a given subreddit
+    Prints the titles of the first 10 hot posts for `subreddit`.
+    If the subreddit is invalid or an error occurs, prints None.
     """
+    if not subreddit or not isinstance(subreddit, str):
+        print(None)
+        return
 
-    if subreddit is None or not isinstance(subreddit, str):
-        print("None")
+    headers = {
+        "User-Agent": "python:alu.api_advanced:0.1 (by /u/mufaro-k07)",
+        "Accept": "application/json",
+    }
 
-    user_agent = {'User-agent': 'python:subredditproject:v.01 (by mufaro-k07)'}
-    params = {'limit': 10}
-    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
-
-    response = get(url, headers=user_agent, params=params)
-    results = response.json()
+    params = {"limit": 10}
+    url1 = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url2 = "https://api.reddit.com/r/{}/hot".format(subreddit)
 
     try:
-        my_data = results.get('data').get('children')
+        resp = requests.get(
+            url1, headers=headers, params=params,
+            allow_redirects=False, timeout=10
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+        else:
+            resp2 = requests.get(
+                url2, headers=headers, params=params,
+                allow_redirects=False, timeout=10
+            )
+            if resp2.status_code != 200:
+                print(None)
+                return
+            data = resp2.json()
+    except (requests.RequestException, ValueError):
+        print(None)
+        return
 
-        for i in my_data:
-            print(i.get('data').get('title'))
+    posts = data.get("data", {}).get("children", [])
+    if not posts:
+        print(None)
+        return
 
-    except Exception:
-        print("None")
+    for post in posts[:10]:
+        title = post.get("data", {}).get("title")
+        if title:
+            print(title)

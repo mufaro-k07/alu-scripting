@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-2-recurse: Return a list of titles for all hot posts in a subreddit, recursively.
+Return a list of titles for all hot posts in a subreddit, recursively.
 """
 import requests
 
@@ -15,7 +15,7 @@ def recurse(subreddit, hot_list=None, after=None):
         after (str): Reddit pagination token for the next page.
 
     Returns:
-        list or None: List of titles, or None if invalid subreddit or no results.
+        list or None: List of titles, or None if invalid subreddit/no results.
     """
     if not subreddit or not isinstance(subreddit, str):
         return None
