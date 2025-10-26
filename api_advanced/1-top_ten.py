@@ -3,7 +3,6 @@
 1-top_ten: Print titles of the first 10 hot posts for a subreddit.
 """
 import requests
-import sys
 
 
 def top_ten(subreddit):
@@ -12,8 +11,7 @@ def top_ten(subreddit):
     If the subreddit is invalid or an error occurs, prints None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        sys.stdout.write("OK")
-        sys.stdout.flush()
+        print("None")
         return
 
     headers = {
@@ -21,32 +19,38 @@ def top_ten(subreddit):
         "Accept": "application/json",
     }
     params = {"limit": 10}
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+
+    url1 = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url2 = "https://api.reddit.com/r/{}/hot".format(subreddit)
 
     try:
         resp = requests.get(
-            url, headers=headers, params=params,
+            url1, headers=headers, params=params,
             allow_redirects=False, timeout=10
         )
-    except requests.RequestException:
-        sys.stdout.write("OK")
-        sys.stdout.flush()
+        if resp.status_code == 200:
+            data = resp.json()
+        else:
+            resp2 = requests.get(
+                url2, headers=headers, params=params,
+                allow_redirects=False, timeout=10
+            )
+            if resp2.status_code != 200:
+                print("None")
+                return
+            data = resp2.json()
+    except (requests.RequestException, ValueError):
+        print("None")
         return
 
-    if resp.status_code != 200:
-        sys.stdout.write("OK")
-        sys.stdout.flush()
-        return
-
-    data = resp.json()
     posts = data.get("data", {}).get("children", [])
-
     if not posts:
-        sys.stdout.write("OK")
-        sys.stdout.flush()
+        print("None")
         return
 
     for post in posts[:10]:
         title = post.get("data", {}).get("title")
-        if title:
-            print(title)
+        if title is None:
+            print("None")
+            return
+        print(title)
