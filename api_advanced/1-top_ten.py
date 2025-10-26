@@ -15,31 +15,25 @@ def top_ten(subreddit):
         return
 
     headers = {
-        "User-Agent": "Python_RedditAPI:alu.adv:v1.0 (by /u/mufaro-k07)",
+        "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/117.0.0.0 Safari/537.36"),
         "Accept": "application/json",
     }
     params = {"limit": 10}
 
-    url1 = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    url2 = "https://api.reddit.com/r/{}/hot".format(subreddit)
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
 
     try:
         resp = requests.get(
-            url1, headers=headers, params=params,
+            url, headers=headers, params=params,
             allow_redirects=False, timeout=10
         )
-        if resp.status_code == 200:
-            data = resp.json()
-        else:
-            resp2 = requests.get(
-                url2, headers=headers, params=params,
-                allow_redirects=False, timeout=10
-            )
-            if resp2.status_code != 200:
-                print("None")
-                return
-            data = resp2.json()
-    except (requests.RequestException, ValueError):
+        if resp.status_code != 200:
+            print("None")
+            return
+        data = resp.json()
+    except Exception:
         print("None")
         return
 
