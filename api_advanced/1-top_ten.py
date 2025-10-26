@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-1-top_ten: Print titles of the first 10 hot posts for a subreddit.
+Prints titles of the first 10 hot posts for a subreddit.
 """
 import requests
 
