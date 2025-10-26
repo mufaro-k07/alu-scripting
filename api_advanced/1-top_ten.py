@@ -11,7 +11,7 @@ def top_ten(subreddit):
     If the subreddit is invalid or an error occurs, prints None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        print("OK")
+        print("OK", end="")
         return
 
     headers = {
@@ -27,7 +27,7 @@ def top_ten(subreddit):
             allow_redirects=False, timeout=10
         )
     except requests.RequestException:
-        print("OK")
+        print("OK", end="")
         return
 
     if resp.status_code != 200:
