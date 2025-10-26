@@ -20,7 +20,7 @@ def number_of_subscribers(subreddit):
     }
 
     try:
-        resp = requests.get(url, headers=headers, allow_redirects=False, timeout=10)
+        resp = requests.get(url, headers=headers, allow_redirects=False)
     except requests.RequestException:
         return 0
 
@@ -33,4 +33,3 @@ def number_of_subscribers(subreddit):
         return 0
 
     return payload.get("data", {}).get("subscribers", 0)
-
