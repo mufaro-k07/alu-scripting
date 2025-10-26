@@ -15,7 +15,7 @@ def top_ten(subreddit):
         return
 
     headers = {
-        "User-Agent": "linux:alu.api_advanced:0.1 (by /u/mufaro-k07)",
+        "User-Agent": "Python_RedditAPI:alu.adv:v1.0 (by /u/mufaro-k07)",
         "Accept": "application/json",
     }
     params = {"limit": 10}
