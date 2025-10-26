@@ -3,6 +3,7 @@
 1-top_ten: Print titles of the first 10 hot posts for a subreddit.
 """
 import requests
+import sys
 
 
 def top_ten(subreddit):
@@ -11,7 +12,7 @@ def top_ten(subreddit):
     If the subreddit is invalid or an error occurs, prints None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        print("OK", end="")
+        sys.stdout.write("OK")
         return
 
     headers = {
@@ -27,18 +28,18 @@ def top_ten(subreddit):
             allow_redirects=False, timeout=10
         )
     except requests.RequestException:
-        print("OK", end="")
+        sys.stdout.write("OK")
         return
 
     if resp.status_code != 200:
-        print("OK", end="")
+        sys.stdout.write("OK")
         return
 
     data = resp.json()
     posts = data.get("data", {}).get("children", [])
 
     if not posts:
-        print("OK", end="")
+        sys.stdout.write("OK")
         return
 
     # Print up to ten titles
