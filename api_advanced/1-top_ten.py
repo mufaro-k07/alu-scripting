@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Reddit API helper: print titles of first 10 hot posts for a subreddit."""
+"""Query Reddit API and print titles of the first 10 hot posts."""
 import requests
 
 
@@ -10,11 +10,10 @@ def top_ten(subreddit):
     """
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {
-        "User-Agent": "linux:api_advanced.top_ten:v1.0 (by /u/alx_student)"
+        "User-Agent": "linux:api_advanced.top_ten:v1.0 (by /u/mufaro-k07)"
     }
     params = {"limit": 10}
 
-    # Do NOT follow redirects – required by the task
     response = requests.get(
         url,
         headers=headers,
