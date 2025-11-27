@@ -18,33 +18,21 @@ def top_ten(subreddit):
         "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/117.0.0.0 Safari/537.36"),
-        "Accept": "application/json",
     }
-    params = {"limit": 10}
 
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+
+    resp = requests.get(url, headers=headers)
+
+    if resp.status_code != 200:
+        print(None)
+        return
 
     try:
-        resp = requests.get(
-            url, headers=headers, params=params,
-            allow_redirects=False, timeout=10
-        )
-        if resp.status_code != 200:
-            print("None")
-            return
-        data = resp.json()
+        posts = resp.json().get("data").get("children")
     except Exception:
-        print("None")
+        print(None)
         return
 
-    posts = data.get("data", {}).get("children", [])
-    if not posts:
-        print("None")
-        return
-
-    for post in posts[:10]:
-        title = post.get("data", {}).get("title")
-        if title is None:
-            print("None")
-            return
-        print(title)
+    for post in posts:
+        print(post.get("data").get("title"))
