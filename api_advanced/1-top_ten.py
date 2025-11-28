@@ -15,13 +15,7 @@ def top_ten(subreddit):
     }
     params = {"limit": 10}
 
-    # Do NOT follow redirects – required by the task
-    response = requests.get(
-        url,
-        headers=headers,
-        params=params,
-        allow_redirects=False
-    )
+    response = requests.get(url, headers=headers, params=params)
 
     if response.status_code != 200:
         print(None)
